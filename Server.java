@@ -1,10 +1,7 @@
 package pack.com;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
+import java.net.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -33,11 +30,17 @@ public class Server {
         System.out.println("Numer sesji: " + numb);
         return numb;
     }
-
+    static void confirm(int port,DatagramPacket serverPocket,DatagramSocket serverSocket ) throws IOException {
+        Calendar hr = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        String time = sdf.format(hr.getTime());
+        InetAddress ia = InetAddress.getLocalHost();
+        String response = "OP?Wiadomosc_Dostarczona<<TM?" + time+"<<";
+        byte[] resp = (response).getBytes();
+        serverSocket.send(new DatagramPacket(resp, resp.length, ia, serverPocket.getPort()));
+    }
     private static final int PORT = 9090;
 
-    // private static ArrayList<ClientHandler> clients= new ArrayList<>();
-    private static ExecutorService pool = Executors.newFixedThreadPool(5);
     private static Map<Integer, String> clientMap;
 
     public static void main(String[] args) throws SocketException {
@@ -54,17 +57,15 @@ public class Server {
             DatagramSocket serverSocket = new DatagramSocket(PORT);
             while (true) {
 
-                String sender;
-                byte[] b = new byte[1024];
+                byte[] b = new byte[2048];
                 DatagramPacket serverPocket = new DatagramPacket(b, b.length);
                 serverSocket.receive(serverPocket);
+                Server.confirm(serverPocket.getPort(),serverPocket,serverSocket);
                 String received = new String(serverPocket.getData());
                 String[] t = received.split("[A-Z]{2}\\?|<<[A-Z]{2}\\?|<<");
-                //System.out.println(received);
                 for (String x : t) System.out.print(x + " ");
                 if (clientMap.containsKey(serverPocket.getPort())) {
                     for (Map.Entry<Integer, String> x : clientMap.entrySet()) {
-                        //serverSocket.send(new DatagramPacket(received.getBytes(), received.length(), serverPocket.getAddress(), x.getKey()));
                     }
                 } else {
 
@@ -76,10 +77,14 @@ public class Server {
                     clientMap.put(serverPocket.getPort(), cid);
                     String time = sdf.format(hr.getTime());
                     String temp = "";
-                    temp = temp + "OP?Sesja<<ID?" + cid + "<<TM?" + time + "<<";
+                    temp = "OP?Sesja<<ID?" + cid + "<<TM?" + time + "<<";
                     InetAddress ia = InetAddress.getLocalHost();
                     byte[] idans = (temp).getBytes();
                     serverSocket.send(new DatagramPacket(idans, idans.length, ia, serverPocket.getPort()));
+                    serverSocket.receive(serverPocket);
+                    received = new String(serverPocket.getData());
+                    t = received.split("[A-Z]{2}\\?|<<[A-Z]{2}\\?|<<");
+                    for (String x : t) System.out.print(x + " ");
                 }
                 if (clientMap.size() >= 2) {
                     Timer tt = new Timer();
@@ -158,5 +163,9 @@ public class Server {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
+
     }
 }
+
