@@ -38,7 +38,7 @@ public class Server {
 
     // private static ArrayList<ClientHandler> clients= new ArrayList<>();
     private static ExecutorService pool = Executors.newFixedThreadPool(5);
-    private static Map<Integer, Integer> clientMap;
+    private static Map<Integer, String> clientMap;
 
     public static void main(String[] args) throws SocketException {
         clientMap = new HashMap<>();
@@ -48,9 +48,8 @@ public class Server {
             //Time starts here
             Calendar hr = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-            Timer tt=new Timer();
-            tt.schedule(new Time(),0,10000);
-           //Time ends here
+
+            //Time ends here
 
             DatagramSocket serverSocket = new DatagramSocket(PORT);
             while (true) {
@@ -62,18 +61,38 @@ public class Server {
                 String received = new String(serverPocket.getData());
                 String[] t = received.split("[A-Z]{2}\\?|<<[A-Z]{2}\\?|<<");
                 //System.out.println(received);
-                for(String x:t) System.out.print(x+" ");
+                for (String x : t) System.out.print(x + " ");
                 if (clientMap.containsKey(serverPocket.getPort())) {
-                    for (Map.Entry<Integer, Integer> x : clientMap.entrySet()) {
+                    for (Map.Entry<Integer, String> x : clientMap.entrySet()) {
                         //serverSocket.send(new DatagramPacket(received.getBytes(), received.length(), serverPocket.getAddress(), x.getKey()));
                     }
                 } else {
 
-                    clientMap.put(serverPocket.getPort(), serverPocket.getPort());
-                    //TUTAJ WARUNEK DLA MAPY O ROZPOCZECIU GRY
+                    String cid = getRandomID();
+                    while (clientMap.containsKey(cid)) {
+                        cid = getRandomID();
+                    }
+
+                    clientMap.put(serverPocket.getPort(), cid);
+                    String time = sdf.format(hr.getTime());
+                    String temp = "";
+                    temp = temp + "OP?Sesja<<ID?" + cid + "<<TM?" + time + "<<";
+                    InetAddress ia = InetAddress.getLocalHost();
+                    byte[] idans = (temp).getBytes();
+                    serverSocket.send(new DatagramPacket(idans, idans.length, ia, serverPocket.getPort()));
+                }
+                if (clientMap.size() >= 2) {
+                    Timer tt = new Timer();
+                    tt.schedule(new Time(), 0, 10000);
+                    String time = "[" + sdf.format(hr.getTime()) + "]:";
+                    String toSend = new String("OP?Podaj_Liczbe<<TM" + time + "<<");
+                    byte[] bOdp = (toSend).getBytes();
+                    InetAddress ia = InetAddress.getLocalHost();
+                    DatagramPacket message = new DatagramPacket(bOdp, bOdp.length, ia, serverPocket.getPort());
+                    serverSocket.send(message);
                 }
 
-
+                /*
                 if (received.substring(0, 2).equals("OD")) {
                     int x = 3;
                     String guess = "";
@@ -124,7 +143,7 @@ public class Server {
                     bOdp = (toSend + "").getBytes();
                     message = new DatagramPacket(bOdp, bOdp.length, ia, serverPocket.getPort());
                     serverSocket.send(message);
-                }*/
+                }
                 if (received.contains("ID")) {
                     String time = "[" + sdf.format(hr.getTime()) + "]:";
                     String toSend = new String(time +"ID sesji: " + id);
@@ -134,7 +153,7 @@ public class Server {
                     serverSocket.send(message);
                 }
                 if (received.contains("EX")) {
-                }
+                }*/
             }
         } catch (IOException e) {
             e.printStackTrace();
