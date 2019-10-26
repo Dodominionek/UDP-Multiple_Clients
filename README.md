@@ -6,8 +6,6 @@ Do zrobienia (oddzielać wykonane wiersze):
 
 -Odpowiedź tak,nie na przesyłaną przez klienta liczbę wysyłana na jego port  Przykład: OP?nie<<ID?id_klienta<<TM?czas<<
 
--Dlaczego godzina się nie wyświetla
-
 -Wysyłanie informacji o zakończeniu się rozgrywki w przypadku odgadnięcia liczby (po kolei wysyłając do każdego klienta w mapie)
 
 -Zachowanie informacji o czasie rozgrywki
@@ -21,3 +19,4 @@ Do zrobienia (oddzielać wykonane wiersze):
 
 Wykonane:
 -Potwierdzenie otrzymania informacji (najlepiej w funkcji, żeby uniknąć powtarzania się kodu) Przykład: OP?Dostarczono<<TM?czas<<
+-Naprowione ucinanie tekstu
