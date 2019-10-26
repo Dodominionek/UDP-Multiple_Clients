@@ -35,7 +35,7 @@ public class Server {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         String time = sdf.format(hr.getTime());
         InetAddress ia = InetAddress.getLocalHost();
-        String response = "OP?Wiadomosc_Dostarczona<<TM?" + time+"<<";
+        String response = "OP?Wiadomosc_Dostarczona<<TM?" + time+"<<\n"";
         byte[] resp = (response).getBytes();
         serverSocket.send(new DatagramPacket(resp, resp.length, ia, serverPocket.getPort()));
     }
