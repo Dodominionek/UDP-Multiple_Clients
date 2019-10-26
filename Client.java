@@ -14,7 +14,7 @@ public class Client {
         Calendar hr = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         String time = sdf.format(hr.getTime());
-        String response = "OP?Wiadomosc_Dostarczona<<TM?" + time+"<<";
+        String response = "OP?Wiadomosc_Dostarczona<<TM?" + time+"<<\n";
         byte[] resp = (response).getBytes();
         InetAddress ia = InetAddress.getLocalHost();
         DatagramPacket clientPacket = new DatagramPacket(resp, resp.length, ia, SERVER_PORT);
@@ -36,10 +36,10 @@ public class Client {
             clientSocket.send(clientPacket);
             System.out.println("Wyslano zapytanie o ID sesji");
 
+            b = new byte[1024];
             DatagramPacket serverPocket = new DatagramPacket(b, b.length);
             clientSocket.receive(serverPocket);
             String received = new String(serverPocket.getData());
-            System.out.println(received);
             Client.confirm(clientSocket);//Potwierdzenie
             String[] t = received.split("[A-Z]{2}\\?|<<[A-Z]{4}\\?|<<");
             for(String x:t)
