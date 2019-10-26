@@ -19,4 +19,5 @@ Do zrobienia (oddzielać wykonane wiersze):
 
 Wykonane:
 -Potwierdzenie otrzymania informacji (najlepiej w funkcji, żeby uniknąć powtarzania się kodu) Przykład: OP?Dostarczono<<TM?czas<<
+
 -Naprowione ucinanie tekstu
