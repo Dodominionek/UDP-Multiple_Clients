@@ -5,9 +5,20 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Time extends TimerTask {
+    private int tr;
 
-        @Override
-        public void run() {
+    public Time(int tr) {
+        this.tr = tr;
+    }
 
+    @Override
+    public void run() {
+
+
+        System.out.println("Time remaining: " + tr + " seconds");
+        tr = tr - 10;
+        if (tr < 0) {
+            System.out.println("XD");
         }
+    }
 }
