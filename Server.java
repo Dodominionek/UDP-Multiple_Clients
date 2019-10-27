@@ -1,10 +1,7 @@
 package pack.com;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
+import java.net.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -33,93 +30,98 @@ public class Server {
         System.out.println("Numer sesji: " + numb);
         return numb;
     }
-
+    static void confirm(int port,DatagramPacket serverPocket,DatagramSocket serverSocket ) throws IOException {
+        Calendar hr = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        String time = sdf.format(hr.getTime());
+        InetAddress ia = InetAddress.getLocalHost();
+        String response = "OP?Wiadomosc_Dostarczona<<TM?" + time+"<<\n";
+        byte[] resp = (response).getBytes();
+        serverSocket.send(new DatagramPacket(resp, resp.length, ia, serverPocket.getPort()));
+    }
     private static final int PORT = 9090;
 
-    // private static ArrayList<ClientHandler> clients= new ArrayList<>();
-    private static ExecutorService pool = Executors.newFixedThreadPool(5);
-    private static Map<Integer, Integer> clientMap;
-
+    private static Map<Integer, String> clientMap;
 
     public static void main(String[] args) throws SocketException {
         clientMap = new HashMap<>();
-        boolean begin=false;
 
         boolean res = false;
         try {
             //Time starts here
             Calendar hr = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-            Timer tt=new Timer();
-            int sessionTime=-1;
-            int id1=-1;
-            int id2=-1;
-            int tim=1;
+
+            //Time ends here
 
             DatagramSocket serverSocket = new DatagramSocket(PORT);
             while (true) {
 
-                String sender;
-                byte[] b = new byte[1024];
+                byte[] b = new byte[2048];
                 DatagramPacket serverPocket = new DatagramPacket(b, b.length);
                 serverSocket.receive(serverPocket);
+                Server.confirm(serverPocket.getPort(),serverPocket,serverSocket);
                 String received = new String(serverPocket.getData());
                 String[] t = received.split("[A-Z]{2}\\?|<<[A-Z]{2}\\?|<<");
-                //System.out.println(received);
-                for(String x:t) System.out.print(x+" ");
+                for (String x : t) System.out.print(x + " ");
                 if (clientMap.containsKey(serverPocket.getPort())) {
-                    for (Map.Entry<Integer, Integer> x : clientMap.entrySet()) {
-                        //serverSocket.send(new DatagramPacket(received.getBytes(), received.length(), serverPocket.getAddress(), x.getKey()));
+                    for (Map.Entry<Integer, String> x : clientMap.entrySet()) {
                     }
                 } else {
-                    if(id1==-1){
-                        id1=serverPocket.getPort();
+
+                    String cid = getRandomID();
+                    while (clientMap.containsKey(cid)) {
+                        cid = getRandomID();
                     }
-                    if(serverPocket.getPort()!=id1&&id1!=-1){
-                        id2=serverPocket.getPort();
-                    }
-                    clientMap.put(serverPocket.getPort(), serverPocket.getPort());
-                    //TUTAJ WARUNEK DLA MAPY O ROZPOCZECIU GRY
-                    if(clientMap.size()>=2&&begin==false){
-                        sessionTime=((id1+id2)*99)%100+30;
-                        begin=true;
-                    }
+
+                    clientMap.put(serverPocket.getPort(), cid);
+                    String time = sdf.format(hr.getTime());
+                    String temp = "";
+                    temp = "OP?Sesja<<ID?" + cid + "<<TM?" + time + "<<";
+                    InetAddress ia = InetAddress.getLocalHost();
+                    byte[] idans = (temp).getBytes();
+                    serverSocket.send(new DatagramPacket(idans, idans.length, ia, serverPocket.getPort()));
+                    serverSocket.receive(serverPocket);
+                    received = new String(serverPocket.getData());
+                    t = received.split("[A-Z]{2}\\?|<<[A-Z]{2}\\?|<<");
+                    for (String x : t) System.out.print(x + " ");
+                }
+                if (clientMap.size() >= 2) {
+                    Timer tt = new Timer();
+                    tt.schedule(new Time(), 0, 10000);
+                    String time = "[" + sdf.format(hr.getTime()) + "]:";
+                    String toSend = new String("OP?Podaj_Liczbe<<TM" + time + "<<");
+                    byte[] bOdp = (toSend).getBytes();
+                    InetAddress ia = InetAddress.getLocalHost();
+                    DatagramPacket message = new DatagramPacket(bOdp, bOdp.length, ia, serverPocket.getPort());
+                    serverSocket.send(message);
                 }
 
-                while(sessionTime>0){
-                    tt.schedule(new Time(),0,10000);
-                    sessionTime-=10;
-                    if(begin==true){
-                        String toSend = new String("Minelo: "+tim*10+"sekund");
+                /*
+                if (received.substring(0, 2).equals("OD")) {
+                    int x = 3;
+                    String guess = "";
+                    while (received.charAt(x) != '<') {
+                        guess = guess + received.charAt(x);
+                        x++;
+                    }
+                    if (guess.equals(number)) {
+                        String time = "[" + sdf.format(hr.getTime()) + "]:";
+                        String toSend = new String(time + "Gratulacje, udalo ci sie odgadnac liczbe!");
+                        byte[] bOdp = (time + toSend + "").getBytes();
+                        InetAddress ia = InetAddress.getLocalHost();
+                        DatagramPacket message = new DatagramPacket(bOdp, bOdp.length, ia, serverPocket.getPort());
+                        serverSocket.send(message);
+                        res = true;
+                    } else {
+                        String time = "[" + sdf.format(hr.getTime()) + "]:";
+                        String toSend = new String(time + "Niestety, nie udalo ci sie odgadnac liczby");
                         byte[] bOdp = (toSend + "").getBytes();
                         InetAddress ia = InetAddress.getLocalHost();
                         DatagramPacket message = new DatagramPacket(bOdp, bOdp.length, ia, serverPocket.getPort());
                         serverSocket.send(message);
                     }
-                    if (received.substring(0, 2).equals("OD")) {
-                        int x = 3;
-                        String guess = "";
-                        while (received.charAt(x) != '<') {
-                            guess = guess + received.charAt(x);
-                            x++;
-                        }
-                        if (guess.equals(number)) {
-                            String time = "[" + sdf.format(hr.getTime()) + "]:";
-                            String toSend = new String(time + "Gratulacje, udalo ci sie odgadnac liczbe!");
-                            byte[] bOdp = (time + toSend + "").getBytes();
-                            InetAddress ia = InetAddress.getLocalHost();
-                            DatagramPacket message = new DatagramPacket(bOdp, bOdp.length, ia, serverPocket.getPort());
-                            serverSocket.send(message);
-                            res = true;
-                        } else {
-                            String time = "[" + sdf.format(hr.getTime()) + "]:";
-                            String toSend = new String(time + "Niestety, nie udalo ci sie odgadnac liczby");
-                            byte[] bOdp = (toSend + "").getBytes();
-                            InetAddress ia = InetAddress.getLocalHost();
-                            DatagramPacket message = new DatagramPacket(bOdp, bOdp.length, ia, serverPocket.getPort());
-                            serverSocket.send(message);
-                        }
-                    }
+                }
                 /*
                 if (received.substring(0, 2).equals("OP")) {
                     String toSend = new String("Dostepne operacje: ");
@@ -146,20 +148,23 @@ public class Server {
                     bOdp = (toSend + "").getBytes();
                     message = new DatagramPacket(bOdp, bOdp.length, ia, serverPocket.getPort());
                     serverSocket.send(message);
-                }*/
-                    if (received.contains("ID")) {
-                        String time = "[" + sdf.format(hr.getTime()) + "]:";
-                        String toSend = new String(time +"ID sesji: " + id);
-                        byte[] bOdp = (toSend + "").getBytes();
-                        InetAddress ia = InetAddress.getLocalHost();
-                        DatagramPacket message = new DatagramPacket(bOdp, bOdp.length, ia, serverPocket.getPort());
-                        serverSocket.send(message);
-                    }
                 }
-
+                if (received.contains("ID")) {
+                    String time = "[" + sdf.format(hr.getTime()) + "]:";
+                    String toSend = new String(time +"ID sesji: " + id);
+                    byte[] bOdp = (toSend + "").getBytes();
+                    InetAddress ia = InetAddress.getLocalHost();
+                    DatagramPacket message = new DatagramPacket(bOdp, bOdp.length, ia, serverPocket.getPort());
+                    serverSocket.send(message);
+                }
+                if (received.contains("EX")) {
+                }*/
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
+
     }
 }
