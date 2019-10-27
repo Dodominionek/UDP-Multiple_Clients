@@ -43,6 +43,10 @@ public class Server {
 
     private static Map<Integer, String> clientMap;
 
+    public static Map<Integer, String> getClientMap() {
+        return clientMap;
+    }
+
     public static void main(String[] args) throws SocketException {
         clientMap = new HashMap<>();
 
@@ -86,9 +90,22 @@ public class Server {
                     t = received.split("[A-Z]{2}\\?|<<[A-Z]{2}\\?|<<");
                     for (String x : t) System.out.print(x + " ");
                 }
-                if (clientMap.size() >= 2) {
+                if(clientMap.size() == 2)
+                {
+                    //Obliczanie maksymalnego czasu rozgrywki
+                    int mt=0;
+                    for (Map.Entry<Integer, String> entry : clientMap.entrySet()) {
+                        String v = entry.getValue();
+                        int result = Integer.parseInt(v);
+                        mt=mt+result;
+                    }
+                    mt=(mt*99)%100+30;   // [(id. sesji 1 + id. sesji 2) * 99] % 100 + 30
+                    System.out.println("Wyznaczono czas rozgrywki: "+mt);
                     Timer tt = new Timer();
-                    tt.schedule(new Time(), 0, 10000);
+                    tt.schedule(new Time(mt), 0, 10000);
+                }
+                if (clientMap.size() >= 2) {
+
                     String time = "[" + sdf.format(hr.getTime()) + "]:";
                     String toSend = new String("OP?Podaj_Liczbe<<TM" + time + "<<");
                     byte[] bOdp = (toSend).getBytes();
@@ -168,3 +185,4 @@ public class Server {
 
     }
 }
+   
