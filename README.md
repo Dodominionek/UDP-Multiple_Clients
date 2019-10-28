@@ -10,6 +10,7 @@ Do zrobienia (oddzielać wykonane wiersze):
 
 -Zachowanie informacji o czasie rozgrywki
 
+-No teraz jest tego tekstu za dużo
 
 
 
@@ -20,7 +21,7 @@ Do zrobienia (oddzielać wykonane wiersze):
 Wykonane:
 -Potwierdzenie otrzymania informacji (najlepiej w funkcji, żeby uniknąć powtarzania się kodu) Przykład: OP?Dostarczono<<TM?czas<<
 
--Naprowione ucinanie tekstu
+-Naprowione ucinanie tekstu 
 
 -Ustawianie czasu rozgrywki [(id. sesji 1 + id. sesji 2) * 99] % 100 + 30. 
 
