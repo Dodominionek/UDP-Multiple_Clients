@@ -2,7 +2,7 @@
 UDP Server with multiple Clients Connection
 Do zrobienia (oddzielać wykonane wiersze):
 
--Timer
+
 
 -Odpowiedź tak,nie na przesyłaną przez klienta liczbę wysyłana na jego port  Przykład: OP?nie<<ID?id_klienta<<TM?czas<<
 
@@ -23,3 +23,5 @@ Wykonane:
 -Naprowione ucinanie tekstu
 
 -Ustawianie czasu rozgrywki [(id. sesji 1 + id. sesji 2) * 99] % 100 + 30. 
+
+-Timer FUCK YEAH
