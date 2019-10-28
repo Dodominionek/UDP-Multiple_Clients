@@ -7,7 +7,7 @@ import java.util.*;
 
 public class Time extends TimerTask {
     private int tr;
-    int PORT = 9091;
+    int port = 9091;
 
     public Time(int tr) {
         this.tr = tr;
@@ -23,10 +23,12 @@ public class Time extends TimerTask {
         //POBIERA KLIENTÓW DO WYSŁANIA CZASU (MOZLIWE ŻE OD RUSZENIA ZEGARA KTOS DOLACZYŁ)
         Map<Integer, String> clientMap = Server.getClientMap();
         System.out.println("Time remaining: " + tr + " seconds");
+        tr = tr - 10;
 
         try {
-            tr = tr - 10;
-            DatagramSocket serverSocket = new DatagramSocket(PORT);
+
+
+
             if (tr < 0) {
                 String t = Integer.toString(tr);
                 for (Map.Entry<Integer, String> entry : clientMap.entrySet()) {
@@ -34,7 +36,9 @@ public class Time extends TimerTask {
                     String temp = "TM?" + time + "<<ID?" + entry.getValue() + "<<OP?Pozostaly_Czas" + t;
                     InetAddress ia = InetAddress.getLocalHost();
                     byte[] idans = (temp).getBytes();
-                    serverSocket.send(new DatagramPacket(idans, idans.length, ia, v));
+                    //    serverSocket.send(new DatagramPacket(idans, idans.length, ia, v));
+                    DatagramPacket clientPacket = new DatagramPacket(idans, idans.length, ia, v);
+                    Server.serverSocket.send(clientPacket);
                 }
             }
         } catch (SocketException e) {
