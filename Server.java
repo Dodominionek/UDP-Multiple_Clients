@@ -1,4 +1,10 @@
 package pack.com;
+//Wysyłanie informacji o zakończeniu się rozgrywki w przypadku odgadnięcia liczby (po kolei wysyłając do każdego klienta w mapie)
+//Zachowanie informacji o czasie rozgrywki
+//No teraz jest tego tekstu za dużo
+//Coś tam jest ale lepiej poprawić:
+//Odpowiedź tak,nie na przesyłaną przez klienta liczbę wysyłana na jego port  Przykład: OP?nie<<ID?id_klienta<<TM?czas<<
+
 
 import java.io.IOException;
 import java.net.*;
@@ -100,26 +106,12 @@ public class Server {
                 }
                 if (clientMap.size() == 2) {
                     //Obliczanie maksymalnego czasu rozgrywki
-                    int mt = 0;
-                    for (Map.Entry<Integer, String> entry : clientMap.entrySet()) {
-                        String v = entry.getValue();
-                        int result = Integer.parseInt(v);
-                        mt = mt + result;
-                    }
-                    mt = (mt * 99) % 100 + 30;   // [(id. sesji 1 + id. sesji 2) * 99] % 100 + 30
-                    System.out.println("Wyznaczono czas rozgrywki: " + mt);
-                    Timer tt = new Timer();
-                    if (running == false) {
-                        tt.schedule(new Time(mt), 0, 10000);
-                    }
-
 
                     if (end == true) {
-                        running = false;
-                        tt.cancel();
-                        System.out.println("Game Ends");
+                     //   running = false;
+                        //tt.cancel();
+                       // System.out.println("Game Ends");
                     }
-
                 }
                 if (clientMap.size() >= 2) {
                     String yn = "";
@@ -127,22 +119,37 @@ public class Server {
                         System.out.println("\nRozpocząć rozgrywkę(y/n)? Liczba graczy:" + clientMap.size());//Czy rozpocząć rozgrywkę
                         Scanner input = new Scanner(System.in);
                         yn = input.nextLine();
-                        s++;
+
 
                     }
-
                     if (yn.charAt(0) == 'y') {
-                        while (true) {
-
-
+                        s++;
+                        if(s==1)
+                        {
+                            int mt = 0;
+                            for (Map.Entry<Integer, String> entry : clientMap.entrySet()) {
+                                String v = entry.getValue();
+                                int result = Integer.parseInt(v);
+                                mt = mt + result;
+                            }
+                            mt = (mt * 99) % 100 + 30;   // [(id. sesji 1 + id. sesji 2) * 99] % 100 + 30
+                            System.out.println("Wyznaczono czas rozgrywki: " + mt);
+                            Timer tt = new Timer();
+                            if (running == false) {
+                                tt.schedule(new Time(mt), 0, 10000);
+                            }
+                        }
+                        while (end!=true) {
                             running = true;
                             System.out.println("GAME ON");
                             for (Map.Entry<Integer, String> entry : clientMap.entrySet()) {
+                                System.out.println(s);
+                                s++;
                                 hr = Calendar.getInstance();
                                 sdf = new SimpleDateFormat("HH:mm:ss");
                                 int v = entry.getKey();
                                 String time = sdf.format(hr.getTime());
-                                String toSend = new String("OP?Podaj_Liczbe<<TM?" + time + "<<");
+                                String toSend = new String("OP?Podaj_Liczbe<<TM? " + time + "<<             ");
                                 byte[] bOdp = (toSend).getBytes();
                                 InetAddress ia = InetAddress.getLocalHost();
                                 DatagramPacket message = new DatagramPacket(bOdp, bOdp.length, ia, v);//Wysyła info o rozpoczęciu
@@ -152,15 +159,9 @@ public class Server {
                             for (int i = 0; i < clientMap.size(); i++) {
                                 serverSocket.receive(serverPocket);
                                 Server.confirm(serverPocket.getPort(), serverPocket, serverSocket);
-                                received = "";
                                 received = new String(serverPocket.getData());
                                 System.out.println("\nGuess: " + received);
                                 String guess = "";
-/*
-                            Pattern co= Pattern.compile(guess);
-                            Matcher doczego=co.matcher(received);
-                            System.out.println(doczego);
-*/
 
                                 for (int j = 2; j < received.length(); j++) {
                                     if (received.substring(j - 2, j).contains("OD")) {
@@ -175,8 +176,6 @@ public class Server {
                                         }
                                         System.out.println(guess);
                                         break;
-
-
                                     }
                                 }
                                 if (guess.equals(number)) {
@@ -191,6 +190,17 @@ public class Server {
                                     serverSocket.send(message);
                                     serverSocket.receive(serverPocket);
                                     end = true;
+                                    for (Map.Entry<Integer, String> entry : clientMap.entrySet()) {
+                                        hr = Calendar.getInstance();
+                                        sdf = new SimpleDateFormat("HH:mm:ss");
+                                        int v = entry.getKey();
+                                        time = sdf.format(hr.getTime());
+                                        String toSend = new String("OP?Gra_Skończona<<TM?" + time + "<<");
+                                        bOdp = (toSend).getBytes();
+                                        ia = InetAddress.getLocalHost();
+                                        message = new DatagramPacket(bOdp, bOdp.length, ia, v);//Wysyła info o rozpoczęciu
+                                        serverSocket.send(message);
+                                        serverSocket.receive(serverPocket); }
                                     break;
                                 }
                                 if (!guess.equals(number)) {
