@@ -15,6 +15,7 @@ Mogło być lepiej ale jest:
 -No teraz jest tego tekstu za dużo
 
 -Odpowiedź tak,nie na przesyłaną przez klienta liczbę wysyłana na jego port  Przykład: OP?nie<<ID?id_klienta<<TM?czas<<
+Raczej OP?Odpowiedz<<OD?To nie ta liczba<<ID...
 
 
 
