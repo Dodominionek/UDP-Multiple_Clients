@@ -2,17 +2,16 @@
 UDP Server with multiple Clients Connection
 Do zrobienia (oddzielać wykonane wiersze):
 
-
-
--Odpowiedź tak,nie na przesyłaną przez klienta liczbę wysyłana na jego port  Przykład: OP?nie<<ID?id_klienta<<TM?czas<<
-
 -Wysyłanie informacji o zakończeniu się rozgrywki w przypadku odgadnięcia liczby (po kolei wysyłając do każdego klienta w mapie)
 
 -Zachowanie informacji o czasie rozgrywki
 
+
+Mogło być lepiej ale jest:
+
 -No teraz jest tego tekstu za dużo
 
-
+-Odpowiedź tak,nie na przesyłaną przez klienta liczbę wysyłana na jego port  Przykład: OP?nie<<ID?id_klienta<<TM?czas<<
 
 
 
