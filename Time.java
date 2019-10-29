@@ -22,18 +22,15 @@ public class Time extends TimerTask {
 
         //POBIERA KLIENTÓW DO WYSŁANIA CZASU (MOZLIWE ŻE OD RUSZENIA ZEGARA KTOS DOLACZYŁ)
         Map<Integer, String> clientMap = Server.getClientMap();
-        System.out.println("Time remaining: " + tr + " seconds");
-        tr = tr - 10;
+
 
         try {
-
-
-
-            if (tr < 0) {
+            if (tr > 0) {
+                System.out.println("Pozostaly czas: " + tr + "s");
                 String t = Integer.toString(tr);
                 for (Map.Entry<Integer, String> entry : clientMap.entrySet()) {
                     int v = entry.getKey();
-                    String temp = "TM?" + time + "<<ID?" + entry.getValue() + "<<OP?Pozostaly_Czas" + t;
+                    String temp = "TM?" + time + "<<ID?" + entry.getValue() + "<<OP? Pozostaly_Czas:" + t;
                     InetAddress ia = InetAddress.getLocalHost();
                     byte[] idans = (temp).getBytes();
                     //    serverSocket.send(new DatagramPacket(idans, idans.length, ia, v));
@@ -41,10 +38,25 @@ public class Time extends TimerTask {
                     Server.serverSocket.send(clientPacket);
                 }
             }
+            if (tr < 0) {
+                for (Map.Entry<Integer, String> entry : clientMap.entrySet()) {
+                    int v = entry.getKey();
+                    String temp = "TM?" + time + "<<ID?" + entry.getValue() + "<<OP? Upłynął_Czas_Rozgrywki";
+                    InetAddress ia = InetAddress.getLocalHost();
+                    byte[] idans = (temp).getBytes();
+                    //    serverSocket.send(new DatagramPacket(idans, idans.length, ia, v));
+                    DatagramPacket clientPacket = new DatagramPacket(idans, idans.length, ia, v);
+                    Server.serverSocket.send(clientPacket);
+                    this.cancel();
+                }
+            }
+
         } catch (SocketException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        tr = tr - 10;
+
     }
 }
