@@ -7,11 +7,17 @@ Do zrobienia (oddzielać wykonane wiersze):
 -Zachowanie informacji o czasie rozgrywki
 
 
+
+
+
 Mogło być lepiej ale jest:
 
 -No teraz jest tego tekstu za dużo
 
 -Odpowiedź tak,nie na przesyłaną przez klienta liczbę wysyłana na jego port  Przykład: OP?nie<<ID?id_klienta<<TM?czas<<
+
+
+
 
 
 
