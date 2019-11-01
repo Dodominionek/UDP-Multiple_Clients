@@ -23,7 +23,7 @@ public class Client {
 
         public void run() {
             Calendar hr = Calendar.getInstance();
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             String time1 = sdf.format(hr.getTime());
             System.out.println(line);
             Scanner input = new Scanner(System.in);
@@ -52,7 +52,7 @@ public class Client {
 
     static void confirm(DatagramSocket clientSocket) throws IOException {
         Calendar hr = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String time = sdf.format(hr.getTime());
         String response = "OP?Wiadomosc_Dostarczona<<TM?" + time + "<<";
         byte[] resp = (response).getBytes();
@@ -65,7 +65,7 @@ public class Client {
         try {
             String id = "";
             Calendar hr = Calendar.getInstance();
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             String time1 = sdf.format(hr.getTime());
 
             DatagramSocket clientSocket = new DatagramSocket();
@@ -76,7 +76,7 @@ public class Client {
             clientSocket.send(clientPacket);//Zapytanie o  sesję
             System.out.println("Wyslano zapytanie o ID sesji");
 
-            b = new byte[1024];
+            b = new byte[128];
             DatagramPacket serverPocket = new DatagramPacket(b, b.length);
             clientSocket.receive(serverPocket);//Odbiór potwierdzenia
             String received = new String(serverPocket.getData());
@@ -109,7 +109,7 @@ public class Client {
                 received = new String(serverPocket.getData());
                 t = received.split("[A-Z]{2}\\?|<<[A-Z]{4}\\?|<<");
                 for (String x : t) {
-                   // System.out.println(x);
+                    // System.out.println(x);
                     if(line.length()==8)
                     {
                         line =line +" ID:";
@@ -144,6 +144,10 @@ public class Client {
                 {
                     System.out.println(line);
                 }
+                if(line.contains("Czas rozgrywki "))
+                {
+                    System.out.println(line);
+                }
                 //Wysyła liczbę
                     /*
                     clientSocket.receive(serverPocket);//Otrzymuje potwierdzenie dostarczenia
@@ -163,7 +167,6 @@ public class Client {
                         //line=line +x;
                     }
                     Client.confirm(clientSocket);//Wysyła Potwierdzenie
-
                 }*/
                 /*
                 serverPocket = new DatagramPacket(b, b.length);
