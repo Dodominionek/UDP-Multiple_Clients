@@ -6,7 +6,7 @@ Wysyłanie do każdego klienta informacji o końcu rozgrywki (na razie jest do j
 
 Usunięcie wszystkich działań z serwera (gra ma zaczynać się automatycznie, bez wpisywania y/n po np 30 sekundach)
 
-Poprawić i sprawdzić wiadomości
+Poprawić i sprawdzić wiadomości(jest problem z formą w jakiej wysyłamy albo z tym jak odbieramy-data nie jest rozdzielona od reszty wiadomości)
 
 -Wysyłanie informacji o zakończeniu się rozgrywki w przypadku odgadnięcia liczby (po kolei wysyłając do każdego klienta w mapie)
 
