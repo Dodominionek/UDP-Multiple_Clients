@@ -24,11 +24,3 @@ Mogło być lepiej ale jest:
 Raczej OP?Odpowiedz<<OD?To nie ta liczba<<ID...
 
 
-
-
-
-
-
-
-Wykonano: Poprawione daty
-Zwracanie czasu rozgrywki do klientów
