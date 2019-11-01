@@ -43,7 +43,7 @@ public class Server {
 
     static void confirm(int port, DatagramPacket serverPocket, DatagramSocket serverSocket) throws IOException {
         Calendar hr = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String time = sdf.format(hr.getTime());
         InetAddress ia = InetAddress.getLocalHost();
         String response = "OP?Wiadomosc_Dostarczona<<TM?" + time + "<<\n";
@@ -66,16 +66,19 @@ public class Server {
             boolean end = false;
             boolean running = false;
             int s = 0;
+            long tStart;
+            long tGame;
+            long tEnd;
             //Time starts here
             Calendar hr = Calendar.getInstance();
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
             //Time ends here
 
             serverSocket = new DatagramSocket(PORT);
             while (true) {
 
-                byte[] b = new byte[2048];
+                byte[] b = new byte[128];
                 DatagramPacket serverPocket = new DatagramPacket(b, b.length);
                 serverSocket.receive(serverPocket);//Odbiera zapytanie o sesje
                 Server.confirm(serverPocket.getPort(), serverPocket, serverSocket);//Wysyła potwierdzenie zapytania
@@ -108,9 +111,9 @@ public class Server {
                     //Obliczanie maksymalnego czasu rozgrywki
 
                     if (end == true) {
-                     //   running = false;
+                        //   running = false;
                         //tt.cancel();
-                       // System.out.println("Game Ends");
+                        // System.out.println("Game Ends");
                     }
                 }
                 if (clientMap.size() >= 2) {
@@ -119,11 +122,10 @@ public class Server {
                         System.out.println("\nRozpocząć rozgrywkę(y/n)? Liczba graczy:" + clientMap.size());//Czy rozpocząć rozgrywkę
                         Scanner input = new Scanner(System.in);
                         yn = input.nextLine();
-
-
                     }
                     if (yn.charAt(0) == 'y') {
                         s++;
+                        tStart=System.currentTimeMillis()%100000;
                         if(s==1)
                         {
                             int mt = 0;
@@ -146,10 +148,10 @@ public class Server {
                                 System.out.println(s);
                                 s++;
                                 hr = Calendar.getInstance();
-                                sdf = new SimpleDateFormat("HH:mm:ss");
+                                sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                                 int v = entry.getKey();
                                 String time = sdf.format(hr.getTime());
-                                String toSend = new String("OP?Podaj_Liczbe<<TM? " + time + "<<             ");
+                                String toSend = new String("OP?Podaj_Liczbe<<TM? " + time + "<<");
                                 byte[] bOdp = (toSend).getBytes();
                                 InetAddress ia = InetAddress.getLocalHost();
                                 DatagramPacket message = new DatagramPacket(bOdp, bOdp.length, ia, v);//Wysyła info o rozpoczęciu
@@ -179,11 +181,14 @@ public class Server {
                                     }
                                 }
                                 if (guess.equals(number)) {
+                                    tEnd=System.currentTimeMillis()%100000;
+                                    tGame=Math.abs(tStart-tEnd);
+                                    String tOfGame=new String("Czas rozgrywki: "+tGame/1000+" sekund");
                                     hr = Calendar.getInstance();
-                                    sdf = new SimpleDateFormat("HH:mm:ss");
+                                    sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                                     String time = sdf.format(hr.getTime());
                                     String id = clientMap.get(serverPocket.getPort());
-                                    String temp = "TM?" + time + "<<ID?" + id + "<<OP?Liczba_Odgadnieta<<OD?" + guess + "<<";
+                                    String temp = "TM?" + time + "<<ID?" + id + "<<OP?Liczba_Odgadnieta<<OD?" + guess + "<<" + "TG?" + tOfGame + "<<" ;
                                     byte[] bOdp = (temp).getBytes();
                                     InetAddress ia = InetAddress.getLocalHost();
                                     DatagramPacket message = new DatagramPacket(bOdp, bOdp.length, ia, serverPocket.getPort());
@@ -192,7 +197,7 @@ public class Server {
                                     end = true;
                                     for (Map.Entry<Integer, String> entry : clientMap.entrySet()) {
                                         hr = Calendar.getInstance();
-                                        sdf = new SimpleDateFormat("HH:mm:ss");
+                                        sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                                         int v = entry.getKey();
                                         time = sdf.format(hr.getTime());
                                         String toSend = new String("OP?Gra_Skończona<<TM?" + time + "<<");
@@ -205,7 +210,7 @@ public class Server {
                                 }
                                 if (!guess.equals(number)) {
                                     hr = Calendar.getInstance();
-                                    sdf = new SimpleDateFormat("HH:mm:ss");
+                                    sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                                     String time = sdf.format(hr.getTime());
                                     String id = clientMap.get(serverPocket.getPort());
                                     String temp = "TM?" + time + "<<ID?" + id + "<<OP?Liczba_Nie_Odgadnieta<<OD?" + guess + "<<";
@@ -218,16 +223,11 @@ public class Server {
 
                             }
                         }
-
-
                     }
                 }
-
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 }
