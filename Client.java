@@ -89,7 +89,7 @@ public class Client {
             clientSocket.receive(serverPocket);//Odbiera ID sesji
             Client.confirm(clientSocket);//Wysyła potwierdzenie
 
-            received = new String(serverPocket.getData());
+            received = new String(serverPocket.getData(),0,serverPocket.getLength());//ucina stringa za wiadomością, jak jest coś na buforze to czyści
             //  t = received.split("[A-Z]{2}\\?|<<[A-Z]{4}\\?|<<");
             //Łopatologiczne wprowadzenie ID
             if (received.charAt(13) != '<') {
@@ -106,7 +106,7 @@ public class Client {
             while (true) {
                 String line = "";
                 clientSocket.receive(serverPocket);//Odbiera info o rozpoczęciu
-                received = new String(serverPocket.getData());
+                received = new String(serverPocket.getData(),0,serverPocket.getLength());
                 t = received.split("[A-Z]{2}\\?|<<[A-Z]{4}\\?|<<");
                 for (String x : t) {
                     // System.out.println(x);
@@ -117,7 +117,6 @@ public class Client {
 
                     line = line + x;
                 }
-                line =line+"     ";
                 if (line.contains("Pozostaly_Czas")) {
                     System.out.println(line);
                 }
@@ -144,38 +143,9 @@ public class Client {
                 {
                     System.out.println(line);
                 }
-                if(line.contains("Czas rozgrywki "))
-                {
+                if(line.contains("Czas rozgrywki ")) {
                     System.out.println(line);
                 }
-                //Wysyła liczbę
-                    /*
-                    clientSocket.receive(serverPocket);//Otrzymuje potwierdzenie dostarczenia
-                    received = new String(serverPocket.getData());
-                    t = received.split("[A-Z]{2}\\?|<<[A-Z]{4}\\?|<<");
-                    for(String x:t)
-                    {
-                        System.out.println(x);
-                        //line=line +x;
-                    }
-                    clientSocket.receive(serverPocket);//Otrzymuje odpowiedź
-                    received = new String(serverPocket.getData());
-                    t = received.split("[A-Z]{2}\\?|<<[A-Z]{4}\\?|<<");
-                    for(String x:t)
-                    {
-                        System.out.println(x);
-                        //line=line +x;
-                    }
-                    Client.confirm(clientSocket);//Wysyła Potwierdzenie
-                }*/
-                /*
-                serverPocket = new DatagramPacket(b, b.length);
-                clientSocket.receive(serverPocket);
-                String str = new String(serverPocket.getData());
-                System.out.println(str);
-                */
-
-
             }
         } catch (IOException e) {
             e.printStackTrace();
