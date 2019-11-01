@@ -2,6 +2,12 @@
 UDP Server with multiple Clients Connection
 Do zrobienia (oddzielać wykonane wiersze):
 
+Wysyłanie do każdego klienta informacji o końcu rozgrywki (na razie jest do jednego)
+
+Usunięcie wszystkich działań z serwera (gra ma zaczynać się automatycznie, bez wpisywania y/n po np 30 sekundach)
+
+Poprawić i sprawdzić wiadomości
+
 -Wysyłanie informacji o zakończeniu się rozgrywki w przypadku odgadnięcia liczby (po kolei wysyłając do każdego klienta w mapie)
 
 -Zachowanie informacji o czasie rozgrywki
@@ -24,11 +30,5 @@ Raczej OP?Odpowiedz<<OD?To nie ta liczba<<ID...
 
 
 
-Wykonane:
--Potwierdzenie otrzymania informacji (najlepiej w funkcji, żeby uniknąć powtarzania się kodu) Przykład: OP?Dostarczono<<TM?czas<<
-
--Naprowione ucinanie tekstu 
-
--Ustawianie czasu rozgrywki [(id. sesji 1 + id. sesji 2) * 99] % 100 + 30. 
-
--Timer FUCK YEAH
+Wykonano: Poprawione daty
+Zwracanie czasu rozgrywki do klientów
