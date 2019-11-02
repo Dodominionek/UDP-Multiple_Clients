@@ -117,12 +117,15 @@ public class Client {
                 t = received.split("[A-Z]{2}\\?|<<[A-Z]{4}\\?|<<");
                 for (String x : t) {
                     //System.out.println(x);
+                    if(line.length()==19){
+                        line=line+" ID:";
+                    }
                     line = line + x;
                 }
                 if (line.contains("Pozostaly_Czas")) {
                     System.out.println(line);
                 }
-                if (line.contains("Podaj_Liczbe")) {
+                if (line.contains(" Podaj_Liczbe")) {
                     Client.confirm(clientSocket);//Wysyła Potwierdzenie
                     inputnum pl = new inputnum(id,line,clientSocket);
                     Thread tr = new Thread(pl);
