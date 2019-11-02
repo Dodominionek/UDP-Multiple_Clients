@@ -1,4 +1,9 @@
 package pack.com;
+//Wysyłanie informacji o zakończeniu się rozgrywki w przypadku odgadnięcia liczby (po kolei wysyłając do każdego klienta w mapie)
+//Zachowanie informacji o czasie rozgrywki
+//No teraz jest tego tekstu za dużo
+//Coś tam jest ale lepiej poprawić:
+//Odpowiedź tak,nie na przesyłaną przez klienta liczbę wysyłana na jego port  Przykład: OP?nie<<ID?id_klienta<<TM?czas<<
 
 
 import java.io.IOException;
@@ -41,7 +46,7 @@ public class Server {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String time = sdf.format(hr.getTime());
         InetAddress ia = InetAddress.getLocalHost();
-        String response = "OP?Wiadomosc_Dostarczona<<TM?" + time + "<<\n";
+        String response = "OP?Wiadomosc_Dostarczona <<TM?" + time + "<<\n";
         byte[] resp = (response).getBytes();
         serverSocket.send(new DatagramPacket(resp, resp.length, ia, serverPocket.getPort()));
     }
@@ -73,7 +78,7 @@ public class Server {
             serverSocket = new DatagramSocket(PORT);
             while (true) {
 
-                byte[] b = new byte[128];
+                byte[] b = new byte[64];
                 DatagramPacket serverPocket = new DatagramPacket(b, b.length);
                 serverSocket.receive(serverPocket);//Odbiera zapytanie o sesje
                 Server.confirm(serverPocket.getPort(), serverPocket, serverSocket);//Wysyła potwierdzenie zapytania
@@ -146,7 +151,7 @@ public class Server {
                                 sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                                 int v = entry.getKey();
                                 String time = sdf.format(hr.getTime());
-                                String toSend = new String("TM?" + time + "<<ID?" + entry.getKey() + "<<"+"OP?Podaj_Liczbe<<");
+                                String toSend = new String("TM?" + time + "<<ID?" + entry.getValue() + "<<"+"OP? Podaj_Liczbe<<");
                                 byte[] bOdp = (toSend).getBytes();
                                 InetAddress ia = InetAddress.getLocalHost();
                                 DatagramPacket message = new DatagramPacket(bOdp, bOdp.length, ia, v);//Wysyła info o rozpoczęciu
@@ -183,7 +188,7 @@ public class Server {
                                     sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                                     String time = sdf.format(hr.getTime());
                                     String id = clientMap.get(serverPocket.getPort());
-                                    String temp = "TM?" + time + "<<ID?" + id + "<<"+"OP?Liczba_Odgadnieta<<OD?" + guess + "<<";
+                                    String temp = "TM?" + time + "<<ID?" + id + "<<"+"OP? Liczba_Odgadnieta<<OD? " + guess + "<<";
                                     byte[] bOdp = (temp).getBytes();
                                     InetAddress ia = InetAddress.getLocalHost();
                                     DatagramPacket message = new DatagramPacket(bOdp, bOdp.length, ia, serverPocket.getPort());
@@ -195,7 +200,7 @@ public class Server {
                                         sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                                         int v = entry.getKey();
                                         time = sdf.format(hr.getTime());
-                                        String toSend = new String("TM?" + time + "<<ID?" + id + "<<"+"OP?Gra_Skończona<<");
+                                        String toSend = new String("TM?" + time + "<<ID?" + id + "<<"+"OP? Gra_Skończona<<");
                                         bOdp = (toSend).getBytes();
                                         ia = InetAddress.getLocalHost();
                                         message = new DatagramPacket(bOdp, bOdp.length, ia, v);//Wysyła info o rozpoczęciu
@@ -208,7 +213,7 @@ public class Server {
                                     sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                                     String time = sdf.format(hr.getTime());
                                     String id = clientMap.get(serverPocket.getPort());
-                                    String temp = "TM?" + time + "<<ID?" + id + "<<"+"OP?Liczba_Nie_Odgadnieta<<OD?" + guess;
+                                    String temp = "TM?" + time + "<<ID?" + id + "<<"+"OP? Liczba_Nie_Odgadnieta<<OD? " + guess;
                                     byte[] bOdp = (temp).getBytes();
                                     InetAddress ia = InetAddress.getLocalHost();
                                     DatagramPacket message = new DatagramPacket(bOdp, bOdp.length, ia, serverPocket.getPort());
