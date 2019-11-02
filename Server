@@ -1,9 +1,4 @@
 package pack.com;
-//Wysyłanie informacji o zakończeniu się rozgrywki w przypadku odgadnięcia liczby (po kolei wysyłając do każdego klienta w mapie)
-//Zachowanie informacji o czasie rozgrywki
-//No teraz jest tego tekstu za dużo
-//Coś tam jest ale lepiej poprawić:
-//Odpowiedź tak,nie na przesyłaną przez klienta liczbę wysyłana na jego port  Przykład: OP?nie<<ID?id_klienta<<TM?czas<<
 
 
 import java.io.IOException;
@@ -151,7 +146,7 @@ public class Server {
                                 sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                                 int v = entry.getKey();
                                 String time = sdf.format(hr.getTime());
-                                String toSend = new String("TM?" + time + "<<ID?" + id + "<<"+"OP?Podaj_Liczbe<<");
+                                String toSend = new String("TM?" + time + "<<ID?" + entry.getKey() + "<<"+"OP?Podaj_Liczbe<<");
                                 byte[] bOdp = (toSend).getBytes();
                                 InetAddress ia = InetAddress.getLocalHost();
                                 DatagramPacket message = new DatagramPacket(bOdp, bOdp.length, ia, v);//Wysyła info o rozpoczęciu
