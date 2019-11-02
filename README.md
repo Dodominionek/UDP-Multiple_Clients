@@ -10,5 +10,4 @@ Do zrobienia (oddzielać wykonane wiersze):
 
 -Zachowanie informacji o czasie rozgrywki
 
--Odgadywanie liczby przez więcej niż jednego klienta (z jakiegoś powodu tylko jeden może odpowiadać)
 
