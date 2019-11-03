@@ -91,34 +91,43 @@ public class Server {
 
                 byte[] b = new byte[64];
                 DatagramPacket serverPocket = new DatagramPacket(b, b.length);
-                serverSocket.receive(serverPocket);//Odbiera zapytanie o sesje
-                Server.confirm(serverPocket.getPort(), serverPocket, serverSocket);//Wysyła potwierdzenie zapytania
+                serverSocket.receive(serverPocket);
+                //Odbiera zapytanie o sesje
                 String received = new String(serverPocket.getData());
-                String[] t = received.split("[A-Z]{2}\\?|<<[A-Z]{2}\\?|<<");
-
-                for (String x : t) System.out.print(x + " ");
-
-                if (clientMap.containsKey(serverPocket.getPort())) {
-                    for (Map.Entry<Integer, String> x : clientMap.entrySet()) {
-
-                    }
-                } else {
-                    String cid = getRandomID();
-                    while (clientMap.containsKey(cid)) {
-                        cid = getRandomID();
-                    }
-                    clientMap.put(serverPocket.getPort(), cid);
-                    String time = sdf.format(hr.getTime());
-                    String temp = "";
-                    temp = "OP?Sesja<<ID?" + cid + "<<TM?" + time + "<<";
-                    InetAddress ia = InetAddress.getLocalHost();
-                    byte[] idans = (temp).getBytes();
-                    serverSocket.send(new DatagramPacket(idans, idans.length, ia, serverPocket.getPort()));//Wysyła ID  sesji
-                    serverSocket.receive(serverPocket);//Odbiera potwierdzenie
-                    received = new String(serverPocket.getData());
-                    t = received.split("[A-Z]{2}\\?|<<[A-Z]{2}\\?|<<");
-                    for (String x : t) System.out.print(x + " ");
+                if(received.contains("Rozpoczynam_rozgrywke"))
+                {
+                    System.out.printf("ROZPOCZYNA");
                 }
+                else
+                {
+                    Server.confirm(serverPocket.getPort(), serverPocket, serverSocket);//Wysyła potwierdzenie zapytania
+                    String[] t = received.split("[A-Z]{2}\\?|<<[A-Z]{2}\\?|<<");
+
+                    for (String x : t) System.out.print(x + "bambo ");
+
+                    if (clientMap.containsKey(serverPocket.getPort())) {
+                        for (Map.Entry<Integer, String> x : clientMap.entrySet()) {
+
+                        }
+                    } else {
+                        String cid = getRandomID();
+                        while (clientMap.containsKey(cid)) {
+                            cid = getRandomID();
+                        }
+                        clientMap.put(serverPocket.getPort(), cid);
+                        String time = sdf.format(hr.getTime());
+                        String temp = "";
+                        temp = "OP?Sesja<<ID?" + cid + "<<TM?" + time + "<<";
+                        InetAddress ia = InetAddress.getLocalHost();
+                        byte[] idans = (temp).getBytes();
+                        serverSocket.send(new DatagramPacket(idans, idans.length, ia, serverPocket.getPort()));//Wysyła ID  sesji
+                        serverSocket.receive(serverPocket);//Odbiera potwierdzenie
+                        received = new String(serverPocket.getData());
+                        t = received.split("[A-Z]{2}\\?|<<[A-Z]{2}\\?|<<");
+                        for (String x : t) System.out.print(x + " ");
+                    }
+                }
+
 
                 if (clientMap.size() >= 2) {
 
@@ -128,7 +137,7 @@ public class Server {
                         start=true;
                         s++;
                     }
-                    System.out.println(start);
+
                     if (!start) {
 
                         tStart = System.currentTimeMillis() % 100000;
@@ -175,7 +184,7 @@ public class Server {
                                 serverSocket.receive(serverPocket);
                             }
 
-                            for (int i = 0; i < clientMap.size() ; i++) {
+                            for (int i = 0; i < clientMap.size(); i++) {
                                 serverSocket.receive(serverPocket);
                                 Server.confirm(serverPocket.getPort(), serverPocket, serverSocket);
                                 received = new String(serverPocket.getData());
