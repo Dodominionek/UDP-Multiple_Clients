@@ -90,7 +90,7 @@ public class Client {
 
 
         try {
-
+            boolean gameon=true;
             String id = "";
             Calendar hr = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -152,10 +152,18 @@ public class Client {
                 }
 
             }
+            if(id.contains("nul"))
+            {
+                System.out.println("\nSesja już się zaczeła");
+                gameon=false;
 
-            System.out.println("\nPrzyznane ID sesji:" + id);
+            }
+            else{
+                System.out.println("\nPrzyznane ID sesji:" + id);
+            }
 
-            while (true) {
+
+            while (gameon) {
 
                 String line = "";
                 clientSocket.receive(serverPocket);//Odbiera info o rozpoczęciu
