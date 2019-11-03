@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class STime extends TimerTask {
-    private int tr=30;
+    private int tr = 30;
     int port = 9091;
 
 
@@ -31,7 +31,7 @@ public class STime extends TimerTask {
                 for (Map.Entry<Integer, String> entry : clientMap.entrySet()) {
                     int v = entry.getKey();
                     //"<<ID?" + entry.getValue() +
-                    String temp = "TM?" + time +  "<<OP? Do_rozpoczecia_rozgrywki: " + t;
+                    String temp = "TM?" + time + "<<OP? Do_rozpoczecia_rozgrywki: " + t;
                     InetAddress ia = InetAddress.getLocalHost();
                     byte[] idans = (temp).getBytes();
                     //    serverSocket.send(new DatagramPacket(idans, idans.length, ia, v));
@@ -45,11 +45,25 @@ public class STime extends TimerTask {
             e.printStackTrace();
         }
         if (tr <= 0) {
-                     Server.start=false;
-                     System.out.println("Zatrzymano odliczanie ");
-                    this.cancel();
-                }
+            Server.start = false;
+            System.out.println("Zatrzymano odliczanie ");
+            String temp = "TM?" + time + "<<OP? Rozpoczynam_rozgrywke: ";
+            InetAddress ia = null;
+            try {
+                ia = InetAddress.getLocalHost();
 
+                byte[] idans = (temp).getBytes();
+
+                DatagramPacket clientPacket = new DatagramPacket(idans, idans.length, ia, 9090);
+
+                Server.serverSocket.send(clientPacket);
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            this.cancel();
+        }
 
 
         tr = tr - 10;
