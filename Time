@@ -17,7 +17,7 @@ public class Time extends TimerTask {
     public void run() {
         //CZAS
         Calendar hr = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         String time = sdf.format(hr.getTime());
 
         //POBIERA KLIENTÓW DO WYSŁANIA CZASU (MOZLIWE ŻE OD RUSZENIA ZEGARA KTOS DOLACZYŁ)
@@ -26,11 +26,12 @@ public class Time extends TimerTask {
 
         try {
             if (tr > 0) {
-                System.out.println("Pozostaly czas: " + tr + " sekund");
+                System.out.println("Pozostaly czas: " + tr + "s");
                 String t = Integer.toString(tr);
                 for (Map.Entry<Integer, String> entry : clientMap.entrySet()) {
                     int v = entry.getKey();
-                    String temp = "TM?" + time + "<<ID?" + entry.getValue() + "<<OP? Pozostaly_Czas:" + t;
+                    //"<<ID?" + entry.getValue() +
+                    String temp = "TM?" + time +  "<<OP? Pozostaly_Czas:" + t;
                     InetAddress ia = InetAddress.getLocalHost();
                     byte[] idans = (temp).getBytes();
                     //    serverSocket.send(new DatagramPacket(idans, idans.length, ia, v));
@@ -38,10 +39,10 @@ public class Time extends TimerTask {
                     Server.serverSocket.send(clientPacket);
                 }
             }
-            if (tr < 0) {
+            if (tr <= 0) {
                 for (Map.Entry<Integer, String> entry : clientMap.entrySet()) {
                     int v = entry.getKey();
-                    String temp = "TM?" + time + "<<ID?" + entry.getValue() + "<<OP? Upłynął_Czas_Rozgrywki";
+                    String temp = "TM?" + time + "<<OP?Upłynął_Czas_Rozgrywki:";
                     InetAddress ia = InetAddress.getLocalHost();
                     byte[] idans = (temp).getBytes();
                     //    serverSocket.send(new DatagramPacket(idans, idans.length, ia, v));
@@ -50,11 +51,11 @@ public class Time extends TimerTask {
                     this.cancel();
                 }
             }
-        } catch (SocketException e) {
-            e.printStackTrace();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
         tr = tr - 10;
+
     }
 }
