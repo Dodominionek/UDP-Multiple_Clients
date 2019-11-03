@@ -12,10 +12,16 @@ import java.util.regex.Pattern;
 
 public class Server {
 
+    public static boolean  start=false;
     public static String number = getRandomnumber();
     public static DatagramSocket serverSocket;
 
+    static public void setStart(int start) {
+        start=0;
+    }
+
     public static String getRandomnumber() {
+
 
         int number;
         String numb;
@@ -57,14 +63,19 @@ public class Server {
         return clientMap;
     }
 
+
+
+
+
     public static void main(String[] args) throws SocketException {
         clientMap = new HashMap<>();
 
         try {
-
             Timer tt = new Timer();
+            Timer countdown = new Timer();
             boolean end = false;
             boolean running = false;
+
             int s = 0;
             long tStart;
             long tGame;
@@ -109,39 +120,18 @@ public class Server {
                     for (String x : t) System.out.print(x + " ");
                 }
 
-                if (clientMap.size() == 2) {
-
-                    //Obliczanie maksymalnego czasu rozgrywki
-
-
-                    if (end == true) {
-
-                        //   running = false;
-
-                        //tt.cancel();
-
-                        // System.out.println("Game Ends");
-
-                    }
-
-                }
-
                 if (clientMap.size() >= 2) {
-                    String yn = "";
 
                     if (s == 0) {
 
-                        System.out.println("\nRozpoczac rozgrywke (y/n)? Liczba graczy:" + clientMap.size());//Czy rozpocząć rozgrywkę
-                        Scanner input = new Scanner(System.in);
-                        yn = input.nextLine();
-
-                    }
-
-                    if (yn.charAt(0) == 'y') {
-
+                        tt.schedule(new STime(), 0, 10000);
+                        start=true;
                         s++;
-                        tStart = System.currentTimeMillis() % 100000;
+                    }
+                    System.out.println(start);
+                    if (!start) {
 
+                        tStart = System.currentTimeMillis() % 100000;
                         if (s == 1) {
 
                             int mt = 0;
@@ -159,9 +149,7 @@ public class Server {
 
 
                             if (running == false) {
-
                                 tt.schedule(new Time(mt), 0, 10000);
-
                             }
 
                         }
@@ -193,7 +181,6 @@ public class Server {
                                 received = new String(serverPocket.getData());
                                //System.out.println("\nGuess: " + received);
                                 String guess = "";
-
 
                                 for (int j = 2; j < received.length(); j++) {
                                     if (received.substring(j - 2, j).contains("OD")) {
@@ -236,7 +223,6 @@ public class Server {
                                     end = true;
 
                                     for (Map.Entry<Integer, String> entry : clientMap.entrySet()) {
-
 
                                         hr = Calendar.getInstance();
                                         sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
