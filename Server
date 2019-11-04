@@ -100,9 +100,9 @@ public class Server {
 
         String time = sdf.format(hr.getTime());
 
-        //InetAddress ia = serverSocket.getInetAddress();
+        InetAddress ia = serverPocket.getAddress();
 
-        InetAddress ia = InetAddress.getLocalHost();
+        //InetAddress ia = InetAddress.getLocalHost();
 
         String response = "OP?Wiadomosc_Dostarczona <<TM?" + time + "<<\n";
 
@@ -240,9 +240,9 @@ public class Server {
 
                         temp = "OP?Sesja<<ID?" + cid + "<<TM?" + time + "<<";
 
-                        // InetAddress ia = serverSocket.getInetAddress();
+                        InetAddress ia = serverPocket.getAddress();
 
-                        InetAddress ia = InetAddress.getLocalHost();
+                        //InetAddress ia = InetAddress.getLocalHost();
 
                         byte[] idans = (temp).getBytes();
 
@@ -362,9 +362,9 @@ public class Server {
 
                                 byte[] bOdp = (toSend).getBytes();
 
-                                // InetAddress ia = serverSocket.getInetAddress();
+                                InetAddress ia = serverSocket.getInetAddress();
 
-                                InetAddress ia = InetAddress.getLocalHost();
+                                ia = InetAddress.getLocalHost();
 
                                 DatagramPacket message = new DatagramPacket(bOdp, bOdp.length, ia, v);//Wysyła info o rozpoczęciu
 
@@ -454,9 +454,9 @@ public class Server {
 
                                     byte[] bOdp = (temp).getBytes();
 
-                                    // InetAddress ia = serverSocket.getInetAddress();
+                                    InetAddress ia = serverSocket.getInetAddress();
 
-                                    InetAddress ia = InetAddress.getLocalHost();
+                                    //InetAddress ia = InetAddress.getLocalHost();
 
                                     DatagramPacket message = new DatagramPacket(bOdp, bOdp.length, ia, serverPocket.getPort());
 
@@ -488,9 +488,9 @@ public class Server {
 
                                         bOdp = (toSend).getBytes();
 
-                                        // InetAddress ia = serverSocket.getInetAddress();
+                                        ia = serverSocket.getInetAddress();
 
-                                        ia = InetAddress.getLocalHost();
+                                        //ia = InetAddress.getLocalHost();
 
                                         message = new DatagramPacket(bOdp, bOdp.length, ia, v);//Wysyła info o rozpoczęciu
 
@@ -502,9 +502,9 @@ public class Server {
 
                                         bOdp = (toSend).getBytes();
 
-                                        // InetAddress ia = serverSocket.getInetAddress();
+                                        ia = serverSocket.getInetAddress();
 
-                                        ia = InetAddress.getLocalHost();
+                                        //ia = InetAddress.getLocalHost();
 
                                         message = new DatagramPacket(bOdp, bOdp.length, ia, v);//Wysyła info o rozpoczęciu
 
@@ -536,9 +536,9 @@ public class Server {
 
                                     byte[] bOdp = (temp).getBytes();
 
-                                    // InetAddress ia = serverSocket.getInetAddress();
+                                    InetAddress ia = serverSocket.getInetAddress();
 
-                                    InetAddress ia = InetAddress.getLocalHost();
+                                    //InetAddress ia = InetAddress.getLocalHost();
 
                                     DatagramPacket message = new DatagramPacket(bOdp, bOdp.length, ia, serverPocket.getPort());
 
@@ -591,4 +591,3 @@ public class Server {
 
 
 }
-
