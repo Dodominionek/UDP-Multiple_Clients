@@ -362,9 +362,9 @@ public class Server {
 
                                 byte[] bOdp = (toSend).getBytes();
 
-                                InetAddress ia = serverSocket.getInetAddress();
+                                InetAddress ia = serverPocket.getAddress();
 
-                                ia = InetAddress.getLocalHost();
+                                //ia = InetAddress.getLocalHost();
 
                                 DatagramPacket message = new DatagramPacket(bOdp, bOdp.length, ia, v);//Wysyła info o rozpoczęciu
 
@@ -454,7 +454,7 @@ public class Server {
 
                                     byte[] bOdp = (temp).getBytes();
 
-                                    InetAddress ia = serverSocket.getInetAddress();
+                                    InetAddress ia = serverPocket.getAddress();
 
                                     //InetAddress ia = InetAddress.getLocalHost();
 
@@ -488,7 +488,7 @@ public class Server {
 
                                         bOdp = (toSend).getBytes();
 
-                                        ia = serverSocket.getInetAddress();
+                                        ia = serverPocket.getAddress();
 
                                         //ia = InetAddress.getLocalHost();
 
@@ -502,7 +502,7 @@ public class Server {
 
                                         bOdp = (toSend).getBytes();
 
-                                        ia = serverSocket.getInetAddress();
+                                        ia = serverPocket.getAddress();
 
                                         //ia = InetAddress.getLocalHost();
 
@@ -536,7 +536,7 @@ public class Server {
 
                                     byte[] bOdp = (temp).getBytes();
 
-                                    InetAddress ia = serverSocket.getInetAddress();
+                                    InetAddress ia = serverPocket.getAddress();
 
                                     //InetAddress ia = InetAddress.getLocalHost();
 
