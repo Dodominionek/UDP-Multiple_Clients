@@ -17,7 +17,7 @@ public class STime extends TimerTask {
     public void run() {
         //CZAS
         Calendar hr = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String time = sdf.format(hr.getTime());
 
         //POBIERA KLIENTÓW DO WYSŁANIA CZASU (MOZLIWE ŻE OD RUSZENIA ZEGARA KTOS DOLACZYŁ)
@@ -31,12 +31,13 @@ public class STime extends TimerTask {
                 for (Map.Entry<Integer, String> entry : clientMap.entrySet()) {
                     int v = entry.getKey();
                     //"<<ID?" + entry.getValue() +
-                    String temp = "TM?" + time + "<<OP? Do_rozpoczecia_rozgrywki: " + t;
+                    String temp = "TM?" + time + "<<ID?" + entry.getValue()+"<<OP?TR:<<VL?" + t+"<<OD?nul<<";
                     InetAddress ia = InetAddress.getLocalHost();
                     byte[] idans = (temp).getBytes();
                     //    serverSocket.send(new DatagramPacket(idans, idans.length, ia, v));
                     DatagramPacket clientPacket = new DatagramPacket(idans, idans.length, ia, v);
                     Server.serverSocket.send(clientPacket);
+
                 }
             }
         } catch (UnknownHostException e) {
@@ -47,7 +48,7 @@ public class STime extends TimerTask {
         if (tr <= 0) {
             Server.start = false;
             System.out.println("Zatrzymano odliczanie ");
-            String temp = "TM?" + time + "<<OP? Rozpoczynam_rozgrywke: ";
+            String temp = "TM?" + time + "<<OP?Status<<ST?Rozpoczeta<<: ";
             InetAddress ia = null;
             try {
                 ia = InetAddress.getLocalHost();
