@@ -95,14 +95,14 @@ public class Server {
                     String[] t = received.split("[A-Z]{2}\\?|<<[A-Z]{2}\\?|<<");
                     for (String x : t) System.out.print(x + "");
                 }
-                if (received.contains("Rozpoczynam_rozgrywke")) {
+                if (received.contains("Rozpoczeta")) {
                     hr = Calendar.getInstance();
                     sdf = new SimpleDateFormat("HH:mm:ss");
                     String time = sdf.format(hr.getTime());
                     for (Map.Entry<Integer, String> entry : clientMap.entrySet()) {
                         int v = entry.getKey();
                         //"<<ID?" + entry.getValue() +
-                        String temp = "TM?" + time + "<<OP?Status<<ST?Rozpoczeta<<ID?"+entry.getValue()+"<<OD?nul<<" ;
+                        String temp = "TM?" + time +" <<ID?"+entry.getValue()+"<<OP?Status<<ST?Rozpoczeta<<OD?nul<<" ;
                         InetAddress ia = InetAddress.getLocalHost();
                         byte[] idans = (temp).getBytes();
                         //    serverSocket.send(new DatagramPacket(idans, idans.length, ia, v));
@@ -111,7 +111,7 @@ public class Server {
                         serverSocket.receive(serverPocket);
                     }
                 }
-                if((!received.contains("Rozpoczynam_rozgrywke")&&(!received.contains("Wiadomosc_Dostarczona"))))
+                if((!received.contains("Rozpoczeta")&&(!received.contains("Wiadomosc_Dostarczona"))))
                 {
                     Server.confirm(serverPocket.getPort(), serverPocket, serverSocket);//Wysyła potwierdzenie zapytania
                     String[] t = received.split("[A-Z]{2}\\?|<<[A-Z]{2}\\?|<<");
@@ -182,7 +182,7 @@ public class Server {
                                 sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                                 int v = entry.getKey();
                                 String time = sdf.format(hr.getTime());
-                                String toSend = new String("TM?" + time + "<<ID?" + entry.getValue() + "<<" + "OP?Podaj_Liczbe<<");
+                                String toSend = new String("TM?" + time + "<<ID?" + entry.getValue() + "<<OD?nul<<" + "OP?Podaj_Liczbe<<");
                                 byte[] bOdp = (toSend).getBytes();
                                 InetAddress ia = serverPocket.getAddress();
                               //  ia = InetAddress.getLocalHost();
@@ -239,7 +239,7 @@ public class Server {
                                         String time = sdf.format(hr.getTime());
 
                                         String id = clientMap.get(serverPocket.getPort());
-                                        String temp = "TM?" + time + "<<ID?" + id + "<<" + "OP?Liczba_Odgadnieta<<OD? " + guess + "<<";
+                                        String temp = "TM?" + time + "<<ID?" + id + "<<" + "OP?ODP<<OD?YES<<";
                                         byte[] bOdp = (temp).getBytes();
                                         InetAddress ia = serverPocket.getAddress();
                                         // InetAddress ia = InetAddress.getLocalHost();
@@ -261,7 +261,7 @@ public class Server {
                                             int v = entry.getKey();
                                             time = sdf.format(hr.getTime());
                                             //String toSend = new String("TM?" + time + "<<ID?" + id + "<<" + "OP? Gra_Skończona<<");
-                                            String toSend = "TM?" + time + "<<OP?Status<<ST?Zakonczona<<ID?<<" + entry.getValue() + "OD?nul<<";
+                                            String toSend = "TM?" + time + "<<OP?Status<<ST?Zakonczona<<ID?" + entry.getValue() + "<<OD?nul<<";
                                             bOdp = (toSend).getBytes();
                                             // ia = serverPocket.getAddress();
                                             ia = InetAddress.getLocalHost();
@@ -288,14 +288,14 @@ public class Server {
                                         sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                                         String time = sdf.format(hr.getTime());
                                         String id = clientMap.get(serverPocket.getPort());
-                                        String temp = "TM?" + time + "<<ID?" + id + "<<" + "OP?Liczba_Nie_Odgadnieta<<OD? " + guess;
+                                        String temp = "TM?" + time + "<<ID?" + id + "<<" + "OP?ODP<<OD?NO<<";
                                         byte[] bOdp = (temp).getBytes();
                                         InetAddress ia = serverPocket.getAddress();
                                         // InetAddress ia = InetAddress.getLocalHost();
                                         DatagramPacket message = new DatagramPacket(bOdp, bOdp.length, ia, serverPocket.getPort());
                                         serverSocket.send(message);
                                         serverSocket.receive(serverPocket);
-                                        String toSend = new String("TM?" + time + "<<ID?" + id + "<<" + "OP?Podaj_Liczbe<<");
+                                        String toSend = new String("TM?" + time + "<<ID?" + id + "<<OD?nul<<" + "OP?Podaj_Liczbe<<");
                                         bOdp = (toSend).getBytes();
                                         ia = serverPocket.getAddress();
                                         //  ia = InetAddress.getLocalHost();
