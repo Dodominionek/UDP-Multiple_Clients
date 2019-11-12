@@ -25,11 +25,12 @@ public class Client {
             Calendar hr = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             String time1 = sdf.format(hr.getTime());
+            line=line.replace("Podaj_Liczbe", " Podaj Liczbe:");
             System.out.println(line);
             Scanner input = new Scanner(System.in);
             String task = input.nextLine();
             System.out.println("LICZBA: " + task);
-            task = new String("TM?" + time1 + "<<ID?" + id + "<<OD?" + task + "<<");//Wpisuje liczbe
+            task = new String("TM?" + time1 +"OP?Odpowiedz<<ID?" + id + "<<OD?" + task + "<<");//Wpisuje liczbe
             byte[] b = task.getBytes();
             InetAddress ia = null;
 
@@ -53,17 +54,30 @@ public class Client {
 
     private static final int SERVER_PORT = 9090;
 
+
     static void confirm(DatagramSocket clientSocket, String id) throws IOException {
         Calendar hr = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String time = sdf.format(hr.getTime());
-        String response = "OP?Wiadomosc_Dostarczona<<TM?" + time + "<<ID?" + id + "<<";
+        String response = "OP?Wiadomosc_Dostarczona<<TM?" + time + "<<ID?" + id + "<<OD?nul<<";
         byte[] resp = (response).getBytes();
-        InetAddress ia = InetAddress.getByName(IP);
-        //InetAddress ia = InetAddress.getLocalHost();
+        //InetAddress ia = InetAddress.getByName(IP);
+        InetAddress ia = InetAddress.getLocalHost();
         DatagramPacket clientPacket = new DatagramPacket(resp, resp.length, ia, SERVER_PORT);
         clientSocket.send(clientPacket);
     }
+    /*
+    static void confirmtime(DatagramSocket clientSocket, String id) throws IOException {
+        Calendar hr = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String time = sdf.format(hr.getTime());
+        String response = "OP?Wiadomosc_Dostarczona<<TM?" + time + "<<ID?" + id + "<<OD?nul<<";
+        byte[] resp = (response).getBytes();
+        //InetAddress ia = InetAddress.getByName(IP);
+        InetAddress ia = InetAddress.getLocalHost();
+        DatagramPacket clientPacket = new DatagramPacket(resp, resp.length, ia, TIMER_PORT);
+        clientSocket.send(clientPacket);
+    }*/
 
     public static void main(String[] args) throws IOException {
         try {
@@ -73,7 +87,7 @@ public class Client {
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             String time1 = sdf.format(hr.getTime());
             DatagramSocket clientSocket = new DatagramSocket();
-            String msg = "OP?Sesja<<TM?" + time1 + "<<ID?" + id + "<<";//Zapytanie sesji
+            String msg = "OP?Sesja<<TM?" + time1 + "<<ID?" + id + "<<OD?nul<<";//Zapytanie sesji
             byte[] b = msg.getBytes();
             InetAddress ia = InetAddress.getByName(IP);
             //InetAddress ia = InetAddress.getLocalHost();
@@ -129,14 +143,14 @@ public class Client {
                 t = received.split("[A-Z]{2}\\?|<<[A-Z]{4}\\?|<<");
                 for (String x : t) {
                     //System.out.println(x);
-                    if (line.length() == 19) {
-                        line = line + " ID:";
-                    }
                     line = line + x;
                 }
-                if (line.contains("Pozostaly_Czas")) {
+                line=line.replace("nul","");
+                line=line.replace(id," ID:"+id);
+                if (line.contains("TTL")) {
                     Client.confirm(clientSocket, id);
-                    System.out.println(line);
+                    line=line.replace("TTL"," Pozostaly czas rozgrywki:");
+                    System.out.println(line+"s");
                 }
                 if (line.contains("Podaj_Liczbe")) {
                     Client.confirm(clientSocket, id);//Wysyła Potwierdzenie
@@ -144,34 +158,43 @@ public class Client {
                     Thread tr = new Thread(pl);
                     tr.start();
                 }
-                if (line.contains("Upłynął_Czas_Rozgrywki")) {
-                    Client.confirm(clientSocket, id);
-                    System.out.println(line);
-                    break;
-                }
                 if (line.contains("Wiadomosc_Dostarczona")) {
                     System.out.println(line);
                 }
-                if (line.contains("Gra_Skończona")) {
-                    Client.confirm(clientSocket, id);//Wysyła Potwierdzenie
-                    System.out.println(line);
-                }
-                if (line.contains("Czas_Rozgrywki:")) {
+                if (line.contains("Czas_Rozgrywki")) {
+                    line=line.replace("Czas_Rozgrywki"," Czas Rozgrywki: ");
                     Client.confirm(clientSocket, id);//Wysyła Potwierdzenie
                     System.out.println(line);
                     break;
                 }
-                if (line.contains("Liczba_Odgadnieta")) {
+                if (line.contains("YES")) {
                     Client.confirm(clientSocket, id);//Wysyła Potwierdzenie
+                    line=line.replace("ODPYES"," Brawo! Udało się zgadnąć liczbę");
                     System.out.println(line);
                 }
-                if (line.contains("Liczba_Nie_Odgadnieta")) {
+                if (line.contains("NO")) {
+                    line=line.replace("ODPNO", " Odpowiedź niepoprawna");
                     System.out.println(line);
                     Client.confirm(clientSocket, id);//Wysyła Potwierdzenie
                 }
-                if (line.contains("Do_rozpoczecia_rozgrywki")) {
+                if (line.contains("TR:")) {
                     Client.confirm(clientSocket, id);
-                    System.out.println(line);
+                   line= line.replace("TR:"," Czas do rozpoczęcia rozgrywki:");
+                    System.out.println(line+"s");
+                }
+                if(line.contains("Status"))
+                {
+                    Client.confirm(clientSocket,id);
+                    if(line.contains("Rozpoczeta"))
+                    {
+                        line=line.replace("StatusRozpoczeta"," Status rozgrywki: ROZPOCZETA");
+                        System.out.println(line);
+                    }
+                    if(line.contains("Zakonczona"))
+                    {
+                        System.out.println("Rozgrywka została zakończona");
+
+                    }
                 }
             }
         } catch (IOException e) {
