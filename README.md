@@ -1,4 +1,5 @@
 # UDP-Multiple_Clients
+UWAGA WERSJA LOKALNA!!!
 UDP Server with multiple Clients Connection
 Do zrobienia (oddzielać wykonane wiersze):
 
