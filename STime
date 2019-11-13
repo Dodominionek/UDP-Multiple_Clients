@@ -18,7 +18,7 @@ public class STime extends TimerTask {
 
     int port = 9091;
 
-    private static String IP = "192.168.1.13";
+    private static String IP = "192.168.1.9";
 
 
 
@@ -106,17 +106,19 @@ public class STime extends TimerTask {
 
                 ia = InetAddress.getByName(IP);
 
+                for (Map.Entry<Integer, String> entry : clientMap.entrySet()) {
+
+                    int v = entry.getKey();
+
+                    byte[] idans = (temp).getBytes();
 
 
-                byte[] idans = (temp).getBytes();
+                    DatagramPacket clientPacket = new DatagramPacket(idans, idans.length, ia, v);
 
 
+                    Server.serverSocket.send(clientPacket);
 
-                DatagramPacket clientPacket = new DatagramPacket(idans, idans.length, ia, 9090);
-
-
-
-                Server.serverSocket.send(clientPacket);
+                }
 
             } catch (UnknownHostException e) {
 
