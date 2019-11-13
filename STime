@@ -1,73 +1,145 @@
 package pack.com;
 
+
+
 import java.io.IOException;
+
 import java.net.*;
+
 import java.text.SimpleDateFormat;
+
 import java.util.*;
 
+
+
 public class STime extends TimerTask {
+
     private int tr = 30;
+
     int port = 9091;
+
+    private static String IP = "192.168.1.13";
+
 
 
     public STime() {
+
     }
 
+
+
     @Override
+
     public void run() {
+
         //CZAS
+
         Calendar hr = Calendar.getInstance();
+
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+
         String time = sdf.format(hr.getTime());
 
+
+
         //POBIERA KLIENTÓW DO WYSŁANIA CZASU (MOZLIWE ŻE OD RUSZENIA ZEGARA KTOS DOLACZYŁ)
+
         Map<Integer, String> clientMap = Server.getClientMap();
 
 
+
+
+
         try {
+
             if (tr > 0) {
+
                 System.out.println("Do rozpoczecia rozgrywki: " + tr + "s");
+
                 String t = Integer.toString(tr);
+
                 for (Map.Entry<Integer, String> entry : clientMap.entrySet()) {
+
                     int v = entry.getKey();
+
                     //"<<ID?" + entry.getValue() +
+
                     String temp = "TM?" + time + "<<ID?" + entry.getValue()+"<<OP?TR:<<VL?" + t+"<<OD?nul<<";
-                    InetAddress ia = InetAddress.getLocalHost();
+
+                    InetAddress ia = InetAddress.getByName(IP);
+
                     byte[] idans = (temp).getBytes();
+
                     //    serverSocket.send(new DatagramPacket(idans, idans.length, ia, v));
+
                     DatagramPacket clientPacket = new DatagramPacket(idans, idans.length, ia, v);
+
                     Server.serverSocket.send(clientPacket);
 
+
+
                 }
+
             }
+
         } catch (UnknownHostException e) {
+
             e.printStackTrace();
+
         } catch (IOException e) {
+
             e.printStackTrace();
+
         }
+
         if (tr <= 0) {
+
             Server.start = false;
+
             System.out.println("Zatrzymano odliczanie ");
+
             String temp = "TM?" + time + "<<OP?Status<<ST?Rozpoczeta<<: ";
+
             InetAddress ia = null;
+
             try {
-                ia = InetAddress.getLocalHost();
+
+                ia = InetAddress.getByName(IP);
+
+
 
                 byte[] idans = (temp).getBytes();
 
+
+
                 DatagramPacket clientPacket = new DatagramPacket(idans, idans.length, ia, 9090);
 
+
+
                 Server.serverSocket.send(clientPacket);
+
             } catch (UnknownHostException e) {
+
                 e.printStackTrace();
+
             } catch (IOException e) {
+
                 e.printStackTrace();
+
             }
+
             this.cancel();
+
         }
+
+
+
 
 
         tr = tr - 10;
 
+
+
     }
+
 }
