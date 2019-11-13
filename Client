@@ -10,7 +10,7 @@ import java.util.Calendar;
 import java.util.Scanner;
 
 public class Client {
-    private static String IP = "169.254.221.152";
+    private static String IP = "192.168.1.13";
     public static class inputnum implements Runnable {
         private String id, line;
         DatagramSocket clientSocket;
@@ -61,8 +61,8 @@ public class Client {
         String time = sdf.format(hr.getTime());
         String response = "OP?Wiadomosc_Dostarczona<<TM?" + time + "<<ID?" + id + "<<OD?nul<<";
         byte[] resp = (response).getBytes();
-        //InetAddress ia = InetAddress.getByName(IP);
-        InetAddress ia = InetAddress.getLocalHost();
+        InetAddress ia = InetAddress.getByName(IP);
+        //InetAddress ia = InetAddress.getLocalHost();
         DatagramPacket clientPacket = new DatagramPacket(resp, resp.length, ia, SERVER_PORT);
         clientSocket.send(clientPacket);
     }
@@ -179,7 +179,7 @@ public class Client {
                 }
                 if (line.contains("TR:")) {
                     Client.confirm(clientSocket, id);
-                   line= line.replace("TR:"," Czas do rozpoczęcia rozgrywki:");
+                    line= line.replace("TR:"," Czas do rozpoczęcia rozgrywki:");
                     System.out.println(line+"s");
                 }
                 if(line.contains("Status"))
